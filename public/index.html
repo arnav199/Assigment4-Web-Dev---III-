@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10130f">
+  <meta name="description" content="A private space for your notes and conversations.">
+  <title>Secure Connect — your private workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/socket.io/socket.io.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail">
+      <a class="brand" href="#" aria-label="Secure Connect home"><span class="brand-mark"><span></span><span></span><span></span><span></span></span><span>secure<span class="brand-light">connect</span></span></a>
+      <div class="rail-label">YOUR SPACE</div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="notes"><span class="nav-icon">▤</span>My notes<span class="nav-count" id="note-count">0</span></button>
+        <button class="nav-item" data-view="chat"><span class="nav-icon">◌</span>Live chat<span class="online-dot"></span></button>
+      </nav>
+      <div class="rail-bottom"><div class="security-card"><div class="security-icon">✳</div><div><strong>Your space, secured.</strong><p>Your notes are private to you. Your password is never stored in plain text.</p></div></div><div class="rail-foot"><span class="status-dot"></span>Connection encrypted</div></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="breadcrumb-current">My notes</strong></div><div class="top-actions"><span class="live-indicator"><i></i> ALL SYSTEMS NORMAL</span><button class="account-button" id="account-button"><span class="avatar" id="avatar">?</span><span class="account-name" id="account-name">Guest</span><span class="chevron">⌄</span></button><div class="account-menu hidden" id="account-menu"><button id="logout-button">Sign out</button></div></div></header>
+      <section class="view active" id="notes-view">
+        <div class="page-intro"><div><div class="eyebrow"><span class="eyebrow-line"></span>YOUR PERSONAL SPACE</div><h1>A little room<br>for <em>your thoughts.</em></h1><p class="intro-copy">Ideas, reminders, the things you don't want to forget.<br>Kept private. Kept yours.</p></div><div class="intro-stamp"><span class="stamp-glyph">✳</span><span>PRIVATE<br>BY DEFAULT</span></div></div>
+        <div class="notes-toolbar"><div><span class="section-kicker">YOUR NOTEBOOK</span><span class="note-total" id="note-total">0 notes</span></div><button class="primary-button" id="new-note-button"><span>＋</span> New note</button></div>
+        <div class="notes-grid" id="notes-grid"></div>
+        <div class="empty-state" id="empty-state"><div class="empty-art"><span class="empty-spark">✳</span><div class="empty-paper"><span></span><span></span><span></span></div></div><h2>Your page is still blank.</h2><p>That's a good place to start. Save a thought, make a list, get it out of your head.</p><button class="text-button" id="empty-create-button">Write your first note <span>↗</span></button></div>
+      </section>
+      <section class="view hidden" id="chat-view">
+        <div class="page-intro chat-intro"><div><div class="eyebrow"><span class="eyebrow-line"></span>THE COMMON ROOM</div><h1>Good things<br>happen <em>in here.</em></h1><p class="intro-copy">A little corner to think out loud.<br>Join the room and say hello.</p></div><div class="intro-stamp"><span class="chat-pulse"></span><span>LIVE<br>RIGHT NOW</span></div></div>
+        <div class="chat-panel"><div class="chat-head"><div><span class="section-kicker">ROOM</span><h2><span class="room-hash">#</span> <input id="room-input" value="general" aria-label="Chat room name" maxlength="32"></h2></div><button class="join-room-button" id="join-room-button">Join room <span>↗</span></button><div class="room-presence"><i></i><span id="room-status">Connecting</span></div></div><div class="messages" id="messages"><div class="chat-notice"><span>✳</span><span>Messages appear here as they happen.</span></div></div><form class="message-form" id="message-form"><input id="message-input" placeholder="Write a message…" maxlength="1000" autocomplete="off" aria-label="Message"><button type="submit" aria-label="Send message">↑</button></form><div class="chat-foot"><span><i class="lock-icon">⌑</i> Authenticated connection</span><span>Messages are not stored</span></div></div>
+      </section>
+      <footer class="main-footer"><span>SECURE CONNECT <span class="footer-dot">·</span> LAB 04</span><span>Made for quieter minds.</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title"><div class="auth-card"><button class="modal-close" id="auth-close" aria-label="Close">×</button><div class="modal-brand"><span class="brand-mark"><span></span><span></span><span></span><span></span></span> secure<span class="brand-light">connect</span></div><div class="eyebrow"><span class="eyebrow-line"></span><span id="auth-kicker">YOUR PRIVATE SPACE</span></div><h2 id="auth-title">Make yourself<br><em>at home.</em></h2><p id="auth-description">Sign in to keep your notes and conversations close.</p><div class="auth-tabs"><button class="auth-tab active" data-auth-mode="login">Sign in</button><button class="auth-tab" data-auth-mode="signup">Create account</button></div><form id="auth-form"><label class="field-label hidden" id="username-label">YOUR NAME<input id="username-field" type="text" maxlength="32" autocomplete="name" placeholder="e.g. Alex Morgan"></label><label class="field-label">EMAIL ADDRESS<input id="email-field" type="email" autocomplete="email" required placeholder="you@example.com"></label><label class="field-label">PASSWORD<input id="password-field" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters"></label><div class="form-error hidden" id="form-error" role="alert"></div><button class="primary-button auth-submit" id="auth-submit" type="submit">Sign in <span>↗</span></button></form><p class="auth-privacy"><span>✳</span> Your password is securely hashed. We can't read it.</p></div></div>
+
+  <div class="modal-backdrop hidden" id="note-modal" role="dialog" aria-modal="true" aria-labelledby="note-modal-title"><div class="note-editor"><button class="modal-close" id="note-close" aria-label="Close">×</button><div class="eyebrow"><span class="eyebrow-line"></span>YOUR NOTEBOOK</div><h2 id="note-modal-title">Save a thought.</h2><form id="note-form"><label class="field-label">TITLE<input id="note-title" maxlength="100" required placeholder="Give it a name"></label><label class="field-label">YOUR NOTE<textarea id="note-content" rows="7" maxlength="10000" placeholder="Start wherever you are…"></textarea></label><div class="note-form-actions"><span id="note-save-status">Only you can see this.</span><button class="primary-button" type="submit">Save note <span>↗</span></button></div></form></div></div>
+  <div class="toast hidden" id="toast" role="status"></div>
+</body>
+</html>
